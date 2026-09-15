@@ -1,7 +1,6 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
-};
+// Photos locales uniquement (/public). Aucune image distante.
+const nextConfig: NextConfig = {};
 
 export default nextConfig;

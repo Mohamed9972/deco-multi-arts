@@ -1,26 +1,218 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* ——— Limestone neutrals (Mediterranean warmth, kept for compatibility) ——— */
+  --color-ivory-50: #faf7f1;
+  --color-ivory-100: #f4eee2;
+  --color-ivory-200: #eae0cc;
+  --color-sand-200: #e6dcc8;
+  --color-sand-300: #d9caae;
+  --color-sand-400: #c2af8b;
+  --color-bronze-500: #9a7b4f;
+  --color-bronze-600: #8c6a3c;
+  --color-bronze-700: #6f542f;
+  --color-charcoal-800: #23211e;
+  --color-charcoal-900: #1a1917;
+  --color-charcoal-950: #121110;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* ——— Deep lagoon pine — hero night / premium B2B surfaces ——— */
+  --color-lagoon-50: #eef5f2;
+  --color-lagoon-100: #d9e8e1;
+  --color-lagoon-200: #b3d2c6;
+  --color-lagoon-600: #12705f;
+  --color-lagoon-700: #0e5a4d;
+  --color-lagoon-800: #123b33;
+  --color-lagoon-900: #0e2c26;
+  --color-lagoon-950: #081d19;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* ——— Sun-baked terracotta — SINGLE conversion accent (sat < 70%) ——— */
+  --color-clay-50: #fbf0e8;
+  --color-clay-100: #f6ddcc;
+  --color-clay-200: #ecb892;
+  --color-clay-400: #d97e44;
+  --color-clay-500: #c2682a;
+  --color-clay-600: #9a4e1e;
+  --color-clay-700: #7a3e18;
+
+  /* ——— Brass — stars / ratings only, never UI chrome ——— */
+  --color-brass-300: #e3c878;
+  --color-brass-400: #d4a94e;
+
+  --font-display: "Fraunces", "Georgia", serif;
+  --font-body: "Outfit", system-ui, -apple-system, sans-serif;
+
+  --animate-hero-drift: hero-drift 26s ease-in-out infinite alternate;
+  --animate-fade-up: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-marquee: marquee 32s linear infinite;
+  --animate-float-soft: float-soft 7s ease-in-out infinite;
+  --animate-pulse-dot: pulse-dot 2.2s ease-out infinite;
+
+  @keyframes hero-drift {
+    from { transform: scale(1) translateY(0); }
+    to { transform: scale(1.09) translateY(-1.5%); }
   }
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(26px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes float-soft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes pulse-dot {
+    0% { box-shadow: 0 0 0 0 rgba(18, 112, 95, 0.55); }
+    70% { box-shadow: 0 0 0 9px rgba(18, 112, 95, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(18, 112, 95, 0); }
+  }
+}
+
+:root {
+  --background: #faf7f1;
+  --foreground: #1a1917;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+}
+
+/* Arabic: Arabic faces first, latin fallback (dir handled on <html>) */
+html[lang="ar"] body {
+  font-family: var(--font-ar-body), var(--font-body);
+}
+html[lang="ar"] .font-display {
+  font-family: var(--font-ar-display), var(--font-display);
+}
+
+::selection {
+  background: #c2682a;
+  color: #fff;
+}
+
+/* Visible keyboard focus — 4.5:1, never removed */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2.5px solid #c2682a;
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Editorial hairlines */
+.editorial-rule {
+  border-top: 1px solid rgba(26, 25, 23, 0.12);
+}
+
+/* Premium card lift — transform + opacity only (60fps) */
+.card-lift {
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.45s ease, border-color 0.3s ease;
+}
+.card-lift:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 60px -28px rgba(8, 29, 25, 0.35);
+}
+
+.img-zoom {
+  overflow: hidden;
+}
+.img-zoom img {
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform;
+}
+.img-zoom:hover img {
+  transform: scale(1.05);
+}
+
+/* Frosted dark glass — hero floating cards */
+.glass-dark {
+  background: rgba(10, 24, 21, 0.55);
+  backdrop-filter: blur(18px) saturate(1.2);
+  -webkit-backdrop-filter: blur(18px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+}
+
+.glass-light {
+  background: rgba(250, 247, 241, 0.82);
+  backdrop-filter: blur(16px) saturate(1.15);
+  -webkit-backdrop-filter: blur(16px) saturate(1.15);
+  border: 1px solid rgba(26, 25, 23, 0.08);
+}
+
+/* Cinematic grain over hero — fixed pseudo-element, GPU cheap */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.09;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Scroll-reveal — progressive enhancement, IO adds .is-visible */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Underline sweep for editorial links */
+.link-sweep {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-repeat: no-repeat;
+  background-position: left calc(100% - 1px);
+  transition: background-size 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding-bottom: 2px;
+}
+.link-sweep:hover {
+  background-size: 100% 1.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
 }

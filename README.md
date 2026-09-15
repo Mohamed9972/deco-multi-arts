@@ -1,36 +1,42 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Déco + Multi-Arts — Catalogue, commandes, devis + admin
 
-## Getting Started
+Site premium FR (TND) pour mobilier extérieur tunisien : transats, pergolas, daybeds, balançoires, sur mesure.
 
-First, run the development server:
+## Démarrage rapide
 
 ```bash
+npm install
+cp .env.example .env   # renseignez DATABASE_URL (Neon)
+npx prisma migrate dev --name init
+npm run db:seed
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Site : http://localhost:3000
+- Admin : http://localhost:3000/admin (email/mdp du `.env`)
+- Suivi commande : `/commande/suivi` (numéro + téléphone)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Sans base (démo)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Le site fonctionne sans `DATABASE_URL` avec des données de repli (`src/data/fallback.ts`) :
+commandes/devis simulés, suivi désactivé, admin en mode démo (`ADMIN_EMAIL` / `ADMIN_PASSWORD`).
 
-## Learn More
+## Production (Vercel + Neon)
 
-To learn more about Next.js, take a look at the following resources:
+1. Créez un projet Neon, copiez `DATABASE_URL` (pooled).
+2. Vercel → variables d'environnement : `DATABASE_URL`, `ADMIN_SESSION_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `NEXT_PUBLIC_WHATSAPP_NUMBER`.
+3. Déployez, puis en local :
+   ```bash
+   DATABASE_URL="..." npx prisma migrate deploy
+   DATABASE_URL="..." npm run db:seed
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- `src/app` — pages publiques FR + `/admin` sécurisé (JWT httpOnly, `src/lib/auth.ts`)
+- `src/app/api` — commandes, devis, suivi, auth, back-office
+- `prisma/schema.prisma` — catégories, produits, clients, commandes, devis, admins
+- `src/data/fallback.ts` — catalogue de repli (remplacez images Unsplash par photos réelles)
+- `src/components/cart-store.tsx` — panier persistant (localStorage)
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Commande = enregistrement sans paiement en ligne, statuts FR : Nouvelle → Confirmée → En préparation → Prête → Livrée.
